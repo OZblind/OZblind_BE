@@ -1,0 +1,38 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# ===== Django =====
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# ===== Environments =====
+.env
+.env.*    # .env.dev, .env.prod 등 환경별 env
+*.env.local
+
+# ===== VSCode / PyCharm =====
+.vscode/
+.idea/
+
+# ===== Docker =====
+# 도커 볼륨 데이터 (PostgreSQL)
+postgres_data/
+
+# ===== macOS =====
+.DS_Store
+
+# ===== uv / pip =====
+.venv/
+venv/
+pip-wheel-metadata/

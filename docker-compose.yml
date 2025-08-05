@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: django_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
