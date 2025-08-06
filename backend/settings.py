@@ -25,14 +25,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
-    'users.apps.UsersConfig',
-    'boards.apps.BoardsConfig',
-    'posts.apps.PostsConfig',
-    'comments.apps.CommentsConfig',
-    'reactions.apps.ReactionsConfig',
-    'books.apps.BooksConfig',
-    'notifications.apps.NotificationsConfig',
-    'tags.apps.TagsConfig',
+    'backend.apps.users.apps.UsersConfig',
+    'backend.apps.boards.apps.BoardsConfig',
+    'backend.apps.posts.apps.PostsConfig',
+    'backend.apps.comments.apps.CommentsConfig',
+    'backend.apps.reactions.apps.ReactionsConfig',
+    'backend.apps.bookmarks.apps.BookmarksConfig',
+    'backend.apps.notifications.apps.NotificationsConfig',
+    'backend.apps.tags.apps.TagsConfig',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +79,14 @@ DATABASES = {
     }
 }
 
+SITE_ID = 1
+
+AUTH_USER_MODEL = 'users.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -131,3 +139,23 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# 구글 OAuth 설정
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+import os
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
