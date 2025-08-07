@@ -6,6 +6,8 @@ class Board(models.Model):
     created_at = models.DateTimeField(auto_now_add = True, verbose_name = "게시글 생성 일시")
     updated_at = models.DateTimeField(auto_now = True, verbose_name = "게시글 수정 일시")
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
     class Meta:
