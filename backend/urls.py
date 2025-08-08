@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import (
@@ -15,7 +14,7 @@ urlpatterns = [
     path('posts/', include('backend.apps.posts.urls')),
     path('comments/', include('backend.apps.comments.urls')),
     path('reactions/', include('backend.apps.reactions.urls')),
-    path('bookmarks/', include('backend.apps.bookmarks.urls')),
-    path('notifications/', include('backend.apps.notifications.urls')),
+    path('api/bookmarks/', include('backend.apps.bookmarks.urls')),
+    path('api/ntf/', include('backend.apps.notifications.urls')),
     path('tags/', include('backend.apps.tags.urls')),
 ]
