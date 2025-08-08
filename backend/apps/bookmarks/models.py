@@ -12,7 +12,7 @@ class Bookmark(models.Model):
 
     class Meta:
         constraints = [
-            # 중복 북마크를 방지하는 가장 중요한 규칙입니다.
+            # 중복 북마크를 방지하는 가장 중요한 규칙
             models.UniqueConstraint(fields=['user', 'post'], name='unique_user_post_bookmark')
         ]
         ordering = ['-created_at']
