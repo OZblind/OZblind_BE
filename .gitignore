@@ -17,7 +17,7 @@ media/
 staticfiles/
 
 # ===== Environments =====
-.env
+backend/apps/.env
 .env.*    # .env.dev, .env.prod 등 환경별 env
 *.env.local
 
