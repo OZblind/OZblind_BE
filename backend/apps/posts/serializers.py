@@ -8,10 +8,10 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = (
             'id',
             'user',
-            'views',
-            'likes_cnt',
-            'dislikes_cnt',
-            'bookmark_cnt',
+            'view_count',
+            'like_count',
+            'dislike_count',
+            'bookmark_count',
             'created_at',
             'updated_at'
         )
