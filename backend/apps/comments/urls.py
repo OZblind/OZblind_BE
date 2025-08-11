@@ -1,3 +1,6 @@
 from django.urls import path
+from .views import CommentCreate, CommentUpdateDelete
 
-urlpatterns = []
+urlpatterns = [
+    path('', CommentCreate.as_view(), name='cmt-create'),
+    path('<int:pk>', CommentUpdateDelete.as_view(), name='cmt-update'),]

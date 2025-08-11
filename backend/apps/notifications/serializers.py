@@ -4,4 +4,4 @@ from .models import Notification
 class NftListSerializer(ModelSerializer):
     class Meta:
         model = Notification
-        fields = '__all__'
+        exclude = ('user',)
