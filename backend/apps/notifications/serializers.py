@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from .models import Notification
 
-class NftListSerializer(ModelSerializer):
+class NtfListSerializer(ModelSerializer):
     class Meta:
         model = Notification
         exclude = ('user',)
