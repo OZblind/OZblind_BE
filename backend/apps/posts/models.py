@@ -7,12 +7,14 @@ class Post(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     image = models.TextField(null=True, blank=True)
-    view_count = models.IntegerField(default=0)
-    like_count = models.IntegerField(default=0)
-    dislike_count = models.IntegerField(default=0)
-    bookmark_count = models.IntegerField(default=0)
+    view_count = models.PositiveIntegerField(default=0)
+    like_count = models.PositiveIntegerField(default=0)
+    dislike_count = models.PositiveIntegerField(default=0)
+    bookmark_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
 
     class Meta:
         ordering = ('-created_at',)

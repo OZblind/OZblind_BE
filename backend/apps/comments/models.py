@@ -27,3 +27,4 @@ class Comment(models.Model):
         elif is_new and self.parent is not None:
             self.root = self.parent.root
             self.save(update_fields=['root'])
+
