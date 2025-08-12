@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from backend.apps.notifications.models import Notification
 
 from .models import Comment
-from .serializers import CommentCreateSerializer, CommentSerializer
+from .serializers import CommentCreateSerializer, CommentSerializer, MyCommentSerializer
 
 class CommentCreate(APIView):
     # 댓글 등록
@@ -61,3 +61,10 @@ class CommentUpdateDelete(APIView):
         # 자신을 참조하는 댓글이 없는 경우
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class MyComment(APIView):
+    # 유저의 댓글 조회
+    def get(self, request):
+        comments = Comment.objects.filter(user=request.user)
+        serializer = MyCommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
