@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Post
-from comments.models import Comment
+
+from ..comments.models import Comment
 
 class ReplySerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,11 +33,9 @@ class CommentSerializer(serializers.ModelSerializer):
             'children'
         ]
 
-
-
 class PostSerializer(serializers.ModelSerializer):
 
-    root_comment = CommentSerializer()
+    root_comment = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
