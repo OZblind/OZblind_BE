@@ -33,6 +33,7 @@ class BookmarkAPIView(APIView):
         bookmark.delete()
         return Response({"message": "삭제완료"}, status=status.HTTP_204_NO_CONTENT)
     
+# 이 아래로 는 북마크 목록 조회를 위한 코드 (api/bookmarks/me/)
 class BookmarkListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BookmarkListSerializer
