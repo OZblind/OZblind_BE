@@ -1,5 +1,36 @@
 from rest_framework import serializers
 from .models import Post
+from ..comments.models import Comment
+
+class ReplySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'post',
+            'user',
+            'parent',
+            'content',
+            'like_count',
+            'dislike_count',
+            'created_at',
+            'updated_at'
+        ]
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'post',
+            'user',
+            'parent',
+            'content',
+            'like_count',
+            'dislike_count',
+            'created_at',
+            'updated_at',
+            'children'
+        ]
 
 from ..comments.models import Comment
 
