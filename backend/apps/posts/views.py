@@ -1,6 +1,5 @@
-#from django.db.models import F 추후 인기게시글 좋아요 반영시 작성예정
 from rest_framework import viewsets
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Post
 from .serializers import PostSerializer
@@ -12,24 +11,11 @@ class PostViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    filter_backends = [SearchFilter]
+    filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title', 'content']
+    order_fields = ['created_at', 'view_count']
+    order = ['-created_at']
 
-    # 인기순 정렬을 위한 쿼리셋 메소드
-    def _get_popular_queryset(self, queryset):
-        return queryset.order_by('-view_count', '-created_at')
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        ordering = self.request.query_params.get('ordering', None)
-
-        if ordering == 'popular':
-            return self._get_popular_queryset(queryset)
-
-        if ordering == 'created_at':
-            return  queryset.order_by('-created_at')
-
-        return queryset.order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

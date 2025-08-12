@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post
-from comments.models import Comment
+from ..comments.models import Comment
 
 class ReplySerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +34,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
 
-    root_comment = CommentSerializer()
+    root_comment = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -54,7 +54,19 @@ class PostSerializer(serializers.ModelSerializer):
             'root_comment'
         ]
 
-        def get_root_comment(self, post_obj):
-            toplevel_comments = post_obj.comment_set.filter(parent_isnull = True)
-            return CommentSerializer(toplevel_comments, many=True).data
+        read_only_fields = (
+            'id',
+            'user',
+            'view_count',
+            'like_count',
+            'dislike_count',
+            'bookmark_count',
+            'created_at',
+            'updated_at',
+            'root_comment',
+        )
+
+    def get_root_comment(self, post_obj):
+        toplevel_comments = post_obj.comment_set.filter(parent__isnull = True)
+        return CommentSerializer(toplevel_comments, many=True).data
 

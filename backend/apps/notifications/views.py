@@ -1,7 +1,6 @@
-from requests.models import Response
 from rest_framework.views import APIView
 from .models import Notification
-from .selializers import NftListSerializer
+from .serializers import NftListSerializer
 from rest_framework import status
 from rest_framework.response import Response
 
