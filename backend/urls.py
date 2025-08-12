@@ -13,7 +13,7 @@ urlpatterns = [
     path('boards/', include('backend.apps.boards.urls')),
     path('posts/', include('backend.apps.posts.urls')),
     path('api/comments/', include('backend.apps.comments.urls')),
-    path('reactions/', include('backend.apps.reactions.urls')),
+    path('api/reactions/', include('backend.apps.reactions.urls')),
     path('api/bookmarks/', include('backend.apps.bookmarks.urls')),
     path('api/ntf/', include('backend.apps.notifications.urls')),
     path('tags/', include('backend.apps.tags.urls')),
