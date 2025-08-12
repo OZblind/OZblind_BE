@@ -4,7 +4,7 @@ from .models import Comment
 class CommentCreateSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'root', 'parent', 'content']
+        fields = ['id', 'post', 'root', 'content']
         read_only_fields = ['id']
 
 class CommentSerializer(ModelSerializer):
