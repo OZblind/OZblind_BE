@@ -30,7 +30,7 @@ class NotificationAPITestCase(APITestCase):
         self.notification1=Notification.objects.create(
             user=self.user,
             post=self.post,
-            message="Test Message",
+            message="Test Message1",
         )
         self.notification2 = Notification.objects.create(
             user=self.user,
@@ -38,26 +38,54 @@ class NotificationAPITestCase(APITestCase):
             message="Test Message2",
         )
 
-    def test_ntf_list_get(self):
-        url = reverse('ntf-list')
+   # 유저의 알림 목록 조회
+    def test_ntf_get(self):
+        url = reverse('ntf')
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
+        #print(res.data)
 
+    # 전체 알림 읽음
+    def test_ntf_patch(self):
+        url = reverse('ntf')
+        res = self.client.patch(url)
+        self.assertEqual(res.status_code, 200)
+        # print(res.data)
+        # url = reverse('ntf')
+        # res = self.client.get(url)
+        # print(res.data)
+
+    # 전체 알림 삭제
+    def test_ntf_delete(self):
+        url = reverse('ntf')
+        res = self.client.delete(url)
+        self.assertEqual(res.status_code, 204)
+        # url = reverse('ntf')
+        # res = self.client.get(url)
+        # print(res.data)
+
+    # 특정 알림 읽음
+    def test_ntf_detail_patch(self):
+        url = reverse('ntf-detail', kwargs={'pk': self.notification1.id})
+        res = self.client.patch(url)
+        self.assertEqual(res.status_code, 200)
+        # print(res.data)
+        # url = reverse('ntf')
+        # res = self.client.get(url)
+        # print(res.data)
+
+    # 특정 알림 삭제
+    def test_ntf_detail_delete(self):
+        url = reverse('ntf-detail', kwargs={'pk': self.notification1.id})
+        res = self.client.delete(url)
+        self.assertEqual(res.status_code, 204)
+        # url = reverse('ntf')
+        # res = self.client.get(url)
+        # print(res.data)
+
+    # 유저의 새로운 알림 표시
     def test_ntf_check_get(self):
         url = reverse('ntf-check')
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
-
-    def test_ntf_check_patch(self):
-        url = reverse('ntf-check')
-        res = self.client.patch(url)
-        self.assertEqual(res.status_code, 200)
-
-    def test_ntf_detail_patch(self):
-        url = reverse('ntf-check-detail', kwargs={'pk': self.notification1.id})
-        res = self.client.patch(url)
-        self.assertEqual(res.status_code, 200)
-
-        url = reverse('ntf-list')
-        res = self.client.get(url)
-        print(res.data)
+        # print(res.data)
