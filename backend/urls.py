@@ -14,10 +14,6 @@ urlpatterns = [
     path('api/posts/', include('backend.apps.posts.urls')),
     path('api/comments/', include('backend.apps.comments.urls')),
     path('api/reactions/', include('backend.apps.reactions.urls')),
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/feature/socialusers-sync
     path('api/bookmarks/', include('backend.apps.bookmarks.urls')),
     path('api/ntf/', include('backend.apps.notifications.urls')),
 
