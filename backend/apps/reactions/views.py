@@ -65,26 +65,3 @@ class ReactionAPIView(APIView):
             # (Case 2) 리액션이 새로 생성되었을 경우 (Create)
             response_serializer = ReactionSerializer(existing_reaction)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-
-    def delete(self, request, *args, **kwargs):
-        """ 리액션을 명시적으로 삭제 """
-        target_type_str = request.data.get('target_type')
-        target_id = request.data.get('target_id')
-
-        model_map = {'post': Post, 'comment': Comment}
-        model = model_map.get(target_type_str)
-        if not model:
-            return Response({"error": "Invalid target_type."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        content_type = ContentType.objects.get_for_model(model)
-        
-        # 삭제할 리액션을 '로그인한 사용자'와 '대상 객체'를 기준으로 찾기
-        reaction = get_object_or_404(
-            Reaction,
-            user=request.user,
-            content_type=content_type,
-            object_id=target_id
-        )
-        
-        reaction.delete()
-        return Response({"message": "삭제완료"}, status=status.HTTP_204_NO_CONTENT)
