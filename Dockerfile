@@ -10,12 +10,14 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # 의존성 설치
-COPY pyproject.toml /app/
-COPY uv.lock /app/
-RUN uv pip install --system --no-cache
+COPY pyproject.toml uv.lock /app/
 
-# 프로젝트 복사
-COPY . /app/
+COPY backend /app/backend
+
+COPY manage.py /app/
+RUN uv pip sync --system uv.lock
+
+
 
 # 개발 서버 실행
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
