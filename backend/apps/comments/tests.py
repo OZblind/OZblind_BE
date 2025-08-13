@@ -36,7 +36,7 @@ class CommentAPITestCase(APITestCase):
         self.comment2=Comment.objects.create(
             user=self.user,
             post=self.post,
-            parent=self.comment1,
+            root=self.comment1,
             content="Test Comment2",
         )
 
@@ -77,3 +77,9 @@ class CommentAPITestCase(APITestCase):
         res = self.client.delete(url)
         self.assertEqual(res.status_code, 204)
         #print('개수는 1개?',Comment.objects.all().count())
+
+    def test_cmt_me_get(self):
+        url = reverse('cmt-me')
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 200)
+        print(res.data)

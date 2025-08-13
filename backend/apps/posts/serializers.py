@@ -32,6 +32,38 @@ class CommentSerializer(serializers.ModelSerializer):
             'children'
         ]
 
+from ..comments.models import Comment
+
+class ReplySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'post',
+            'user',
+            'parent',
+            'content',
+            'like_count',
+            'dislike_count',
+            'created_at',
+            'updated_at'
+        ]
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'post',
+            'user',
+            'parent',
+            'content',
+            'like_count',
+            'dislike_count',
+            'created_at',
+            'updated_at',
+            'children'
+        ]
+
 class PostSerializer(serializers.ModelSerializer):
 
     root_comment = serializers.SerializerMethodField()
@@ -70,3 +102,8 @@ class PostSerializer(serializers.ModelSerializer):
         toplevel_comments = post_obj.comment_set.filter(parent__isnull = True)
         return CommentSerializer(toplevel_comments, many=True).data
 
+# 알림기능에 포스트 정보 제한
+class NotificationPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields=('id','title')
