@@ -4,22 +4,20 @@ from .models import Reaction
 from backend.apps.posts.models import Post
 from backend.apps.comments.models import Comment
 
+# 리액션 생성/삭제를 위한 Serializer
 class ReactionSerializer(serializers.ModelSerializer):
-    # API 명세서의 요청 Body를 처리하기 위한 필드
-    # write_only=True는, 데이터를 쓸 때(POST)만 사용하고, 응답(GET)에는 포함하지 않겠다는 뜻입니다.
-    target_type = serializers.ChoiceField(choices=['post', 'comment'], write_only=True)
-    target_id = serializers.IntegerField(write_only=True)
+    target_type = serializers.ChoiceField(choices=['post', 'comment'], write_only=True, required=True)
+    target_id = serializers.IntegerField(write_only=True, required=True)
     
     reaction_type = serializers.CharField(source='reaction', read_only=True)
 
     class Meta:
         model = Reaction
-        # API 명세서에 맞는 필드들을 정의합니다.
         fields = ['id', 'reaction', 'target_type', 'target_id', 'reaction_type']
-        # API 요청 시에는 reaction, target_type, target_id만 받고, 응답 시에는 id와 reaction_type만 보냅니다.
+        # API 요청 시에는 reaction, target_type, target_id만 받고, 응답 시에는 id와 reaction_type만 보냄.
         read_only_fields = ['id']
         extra_kwargs = {
-            'reaction': {'write_only': True},
+            'reaction': {'write_only': True, 'required': True},
         }
 
     def validate(self, data):
