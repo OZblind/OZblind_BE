@@ -1,7 +1,7 @@
 from django.db import models
 
 class Comment(models.Model):
-    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE)
+    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     root = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='thread_comments')
     content = models.CharField(max_length=255)
