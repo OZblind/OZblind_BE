@@ -59,7 +59,7 @@ class ReactionAPIView(APIView):
                     target_object.save()
                 
                 existing_reaction.delete()
-                return Response({"message": "리액션이 취소되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+                return Response({"message": "리액션이 취소되었습니다."}, status=status.HTTP_200_OK)
             else:
                 # 다른 리액션 -> 변경 (Update)
                 

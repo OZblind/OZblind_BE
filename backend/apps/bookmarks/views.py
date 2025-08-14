@@ -15,6 +15,10 @@ class BookmarkAPIView(APIView):
 
     def post(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
+
+        # 이미 북마크가 존재한다면 에러 반환
+        if Bookmark.objects.filter(user=request.user, post=post).exists():
+            return Response({"message": "이미 북마크가 존재함"}, status=status.HTTP_400_BAD_REQUEST)
         
         serializer = BookmarkSerializer(data={'post': post.id})
         serializer.is_valid(raise_exception=True)
@@ -31,7 +35,7 @@ class BookmarkAPIView(APIView):
         
         bookmark = get_object_or_404(Bookmark, user=request.user, post=post)
         bookmark.delete()
-        return Response({"message": "삭제완료"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "삭제완료"}, status=status.HTTP_200_OK)
     
 # 북마크 목록 조회 (api/bookmarks/me/)
 class BookmarkListView(generics.ListAPIView):
