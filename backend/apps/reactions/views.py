@@ -21,7 +21,7 @@ class ReactionAPIView(APIView):
     @transaction.atomic # 이 메서드 안의 모든 DB 작업이 하나의 단위로 처리되도록 보장함
     def post(self, request, *args, **kwargs):
         
-        #  Serializer를 통해 입력 데이터의 유효성을 검증합니다.
+        #  Serializer를 통해 입력 데이터의 유효성을 검증
         serializer = ReactionSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -59,7 +59,7 @@ class ReactionAPIView(APIView):
                     target_object.save()
                 
                 existing_reaction.delete()
-                return Response({"message": "리액션이 취소되었습니다."}, status=status.HTTP_200_OK)
+                return Response({"message": "리액션이 취소됨."}, status=status.HTTP_200_OK)
             else:
                 # 다른 리액션 -> 변경 (Update)
                 
