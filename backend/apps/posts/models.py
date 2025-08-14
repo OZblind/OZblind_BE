@@ -10,7 +10,6 @@ class Post(models.Model):
     view_count = models.PositiveIntegerField(default=0)
     like_count = models.PositiveIntegerField(default=0)
     dislike_count = models.PositiveIntegerField(default=0)
-    bookmark_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -18,3 +17,12 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
+
+# 메인페이지에서 사용하는 핫게시물 모음
+class BestPost(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    view_count=models.PositiveIntegerField()
+    refreshed_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-view_count']
+        db_table = 'best_post'

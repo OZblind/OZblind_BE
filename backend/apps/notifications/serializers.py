@@ -9,4 +9,3 @@ class NtfListSerializer(ModelSerializer):
     class Meta:
         model = Notification
         exclude = ('user',)
-        depth = 1
