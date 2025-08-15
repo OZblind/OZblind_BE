@@ -1,36 +1,5 @@
 from rest_framework import serializers
-from .models import Post
-from ..comments.models import Comment
-
-class ReplySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = [
-            'id',
-            'post',
-            'user',
-            'parent',
-            'content',
-            'like_count',
-            'dislike_count',
-            'created_at',
-            'updated_at'
-        ]
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = [
-            'id',
-            'post',
-            'user',
-            'parent',
-            'content',
-            'like_count',
-            'dislike_count',
-            'created_at',
-            'updated_at',
-            'children'
-        ]
+from .models import Post, BestPost
 
 from ..comments.models import Comment
 
@@ -107,3 +76,15 @@ class NotificationPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields=('id','title')
+
+# 인기 게시글 기능에 사용
+class MainPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('id', 'board', 'user', 'title', 'view_count', 'like_count', 'created_at')
+
+class HotPostSerializer(serializers.ModelSerializer):
+    comment_count = serializers.IntegerField(read_only=True)
+    class Meta:
+        model = Post
+        fields = ('id', 'board', 'title', 'view_count', 'like_count', 'comment_count')

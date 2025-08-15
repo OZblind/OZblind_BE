@@ -16,5 +16,4 @@ urlpatterns = [
     path('api/reactions/', include('backend.apps.reactions.urls')),
     path('api/bookmarks/', include('backend.apps.bookmarks.urls')),
     path('api/ntf/', include('backend.apps.notifications.urls')),
-
 ]
