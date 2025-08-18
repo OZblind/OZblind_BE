@@ -20,4 +20,4 @@ RUN uv pip sync --system uv.lock
 
 
 # 개발 서버 실행
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "backend.wsgi:application"]
