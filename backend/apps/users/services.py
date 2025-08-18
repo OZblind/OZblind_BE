@@ -91,6 +91,7 @@ def revoke_token(refresh_token_str: str):
 
 # 키 유틸
 OZ_SALT = getattr(settings, 'OZ_SALT', None)
+
 if not OZ_SALT:
     raise ImproperlyConfigured('OZ_SALT must be set in settings')
 _OZ_SALT_BYTES = OZ_SALT.encode('utf-8')
