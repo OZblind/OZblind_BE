@@ -92,9 +92,3 @@ class PostAPITestCase(APITestCase):
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
         #print(res.data)
-
-    def test_post_get(self):
-        url=f'/api/posts/?page=1&board_id={self.board.id}'
-        res = self.client.get(url)
-        self.assertEqual(res.status_code, 200)
-        print(res.data)

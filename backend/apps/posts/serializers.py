@@ -1,6 +1,6 @@
 from django.db.models import F
 from rest_framework import serializers
-from .models import Post, PostSurvey, PostGithub, BestPost
+from .models import Post, PostSurvey, PostGithub
 from backend.apps.comments.models import Comment
 from backend.apps.users.serializers import UserTagSerializer
 
@@ -120,10 +120,6 @@ class GithubPostCreateSerializer(serializers.ModelSerializer):
         PostGithub.objects.create(post=post, **github_data)
         return post
 
-
-
-
-
 # 알림기능에 포스트 정보 제한
 class NotificationPostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -132,7 +128,6 @@ class NotificationPostSerializer(serializers.ModelSerializer):
 
 # 최신 게시글 기능에 사용
 class MainPostSerializer(serializers.ModelSerializer):
-    user = UserTagSerializer(read_only=True)
     class Meta:
         model = Post
         fields = ('id', 'board', 'user', 'title', 'view_count', 'like_count', 'created_at')
