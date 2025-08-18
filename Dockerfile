@@ -15,7 +15,7 @@ COPY pyproject.toml uv.lock /app/
 COPY backend /app/backend
 
 COPY manage.py /app/
-RUN uv pip sync --system uv.lock
+RUN uv sync --frozen --system
 
 
 
