@@ -1,12 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PostViewSet, MainPostView, HotPostView
+from .views import PostViewSet, SurveyPostViewSet, GithubPostViewSet
 
 router = DefaultRouter()
 router.register('', PostViewSet, basename='post')
+router.register('survey', SurveyPostViewSet, basename='post-survey')
+router.register('github', GithubPostViewSet, basename='post-github')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('main', MainPostView.as_view(), name='main-post'),
-    path('hot', HotPostView.as_view(), name='hot-post'),
+    path('', include(router.urls))
 ]
