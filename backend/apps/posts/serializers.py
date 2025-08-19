@@ -19,9 +19,16 @@ class CommentSerializer(serializers.ModelSerializer):
             'id', 'post', 'user', 'root', 'content', 'like_count', 'dislike_count', 'created_at', 'updated_at', 'thread_comments'
         ]
 
+# 게시글 목록 조회 및 검색용 게시글 리스트 시리얼라이저
+class PostListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'board', 'title', 'user', 'view_count', 'like_count', 'created_at', 'updated_at']
+
 # 일반 게시글 상세 정보를 위한 메인 시리얼라이저
-class PostSerializer(serializers.ModelSerializer):
+class PostDetailSerializer(serializers.ModelSerializer):
     root_comments = serializers.SerializerMethodField()
+    bookmarks = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -53,10 +60,13 @@ class PostSerializer(serializers.ModelSerializer):
             'root_comments',
         )
 
-    def get_root_comment(self, post_obj):
+    def get_root_comments(self, post_obj):
         # 최상위 댓글(root)을 찾음
         toplevel_comments = post_obj.comments.filter(root=F('id'))
         return CommentSerializer(toplevel_comments, many=True).data
+
+    def get_bookmarks(self, post_obj):
+        return post_obj.bookmark_count
 
 # 알림기능에 포스트 정보 제한
 class NotificationPostSerializer(serializers.ModelSerializer):
