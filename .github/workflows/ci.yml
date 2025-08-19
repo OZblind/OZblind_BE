@@ -1,0 +1,52 @@
+name: python CI
+# 워크 플로우가 실행될 이벤트
+on:
+  push:
+    branches: ["develop"]
+    pull_request:
+      branches: ["develop"]
+
+# 실행될 작업
+jobs:
+  build-and-test:
+    # 실행 환경
+    runs-on: ubuntu-latest
+
+    # 작업 순차적 단계
+    steps:
+      # 저장소의 코드 워크플로우 환경으로 가져옴
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # python 3.13 버전 설정
+      - name: Set up python3.13
+        uses: actions/setip-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'uv'
+
+      - name: install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      # uv설치하고 pyproject.toml 기반으로 의존성 설치
+      - name: Install dependencies with uv
+        run: |
+          # 설치된 uv 사용하기 위해 PATH 설정
+          source ~/.cargo/env
+          uv pip install ".[def,test]"
+
+      # isort black 코드 포맷 검사
+      - name: Check formatting with isort and black
+        run: |
+          source ~/.cargo/env
+          isort . --check-only
+          black . --check
+
+      # pytest 테스트
+      - name: Test with pytest
+        run: |
+          source ~/.cargo/env
+          pytest
+          
+
+
