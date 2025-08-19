@@ -98,7 +98,7 @@ class OzKey(models.Model):
     class Meta:
         indexes = [ models.Index(fields=['is_active'])]
     def __str__(self):
-        return f"{self.tag_number}기 {self.tag_class}"
+        return f"{self.tag_number}기 {self.tag_classes}"
 
 class UserOzkeyMap(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
