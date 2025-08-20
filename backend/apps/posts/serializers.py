@@ -45,7 +45,8 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'bookmark_count',
             'created_at',
             'updated_at',
-            'root_comments'
+            'root_comments',
+            'bookmarks'
         ]
 
         read_only_fields = (
@@ -58,6 +59,8 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'root_comments',
+            'bookmarks',
+
         )
 
     def get_root_comments(self, post_obj):

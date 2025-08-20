@@ -2,9 +2,9 @@ name: python CI
 # 워크 플로우가 실행될 이벤트
 on:
   push:
-    branches: ["develop"]
+    branches: [ "main", "develop"]
     pull_request:
-      branches: ["develop"]
+      branches: [ "main", "develop"]
 
 # 실행될 작업
 jobs:
@@ -23,7 +23,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-          cache: 'uv'
+      - name: Cache uv dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
       - name: install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -33,7 +39,7 @@ jobs:
         run: |
           # 설치된 uv 사용하기 위해 PATH 설정
           source ~/.cargo/env
-          uv pip install ".[def,test]"
+          uv pip install ".[dev]"
 
       # isort black 코드 포맷 검사
       - name: Check formatting with isort and black
