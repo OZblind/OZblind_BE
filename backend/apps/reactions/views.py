@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.db import transaction # DB 작업을 안전하게 묶어주기 위한 도구
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from .models import Reaction
 from .serializers import ReactionSerializer
@@ -17,6 +18,25 @@ class ReactionAPIView(APIView):
     - POST: 리액션을 생성, 변경, 또는 취소 (토글 방식)
     """
     permission_classes = [IsAuthenticated] # 로그인한 사용자만 접근 가능
+
+    @extend_schema(
+        summary="게시물/댓글 리액션 토글",
+        description="""
+        게시물 또는 댓글에 대한 리액션(좋아요/싫어요)을 처리합니다. 이 API는 토글(Toggle) 방식으로 작동합니다.
+
+        - **생성:** 대상에 리액션이 없을 때, 새로운 리액션을 생성합니다. (201 Created)
+        - **변경:** 대상에 다른 종류의 리액션이 있을 때(예: 좋아요->싫어요), 기존 리액션을 변경합니다. (200 OK)
+        - **취소:** 대상에 같은 종류의 리액션이 있을 때, 기존 리액션을 삭제(취소)합니다. (200 OK)
+        """,
+        request=ReactionSerializer, # 요청 Body의 형태는 ReactionSerializer를 따릅니다.
+        responses={
+            201: ReactionSerializer, # 생성
+            200: ReactionSerializer, # 변경
+            204: OpenApiResponse(description="리액션 취소됨"),
+            400: OpenApiResponse(description="잘못된 요청 데이터"), # target_type, target_id 누락 또는 오류
+            404: OpenApiResponse(description="리액션 대상 객체"), # (Post 또는 Comment)가 존재하지 않음
+        }
+    )
 
     @transaction.atomic # 이 메서드 안의 모든 DB 작업이 하나의 단위로 처리되도록 보장함
     def post(self, request, *args, **kwargs):
