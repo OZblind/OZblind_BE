@@ -21,11 +21,13 @@ from .services import (
     IncorrectPasswordError,
     ProfileUpdateError
 )
+from .models import User
 from .serializers import (
     GoogleAuthSerializer,
     ActivateSerializer,
     UserWithTokenSerializer,
-    UserSerializer
+    UserSerializer,
+    UserTagSerializer
 )
 import logging
 
@@ -166,3 +168,9 @@ class ProfileView(APIView):
         }, status=status.HTTP_200_OK)
 
 
+
+# 유저 태그 조회
+class UserTagView(APIView):
+    def get(self, request):
+        serializer = UserTagSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

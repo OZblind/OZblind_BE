@@ -4,7 +4,7 @@ from backend.apps.boards.models import Board
 from backend.apps.posts.models import Post
 from django.urls import reverse
 
-class NotificationAPITestCase(APITestCase):
+class PostAPITestCase(APITestCase):
     # 6번게시물은 view=0
     def setUp(self):
         self.ozkey=OzKey.objects.create(
@@ -74,7 +74,7 @@ class NotificationAPITestCase(APITestCase):
         url = reverse('main-post')
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
-        print(res.data)
+        #print(res.data)
 
     # 인기 5개 갱신
     def test_post_hot_patch(self):
