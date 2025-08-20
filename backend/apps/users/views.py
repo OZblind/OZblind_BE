@@ -7,6 +7,8 @@ from rest_framework import status
 from .services import force_activate_and_issue_tokens
 from django.conf import settings
 
+from drf_spectacular.utils import extend_schema
+
 from . import services
 from .services import (
     google_start_minimal,
@@ -19,7 +21,12 @@ from .services import (
     IncorrectPasswordError,
     ProfileUpdateError
 )
-
+from .serializers import (
+    GoogleAuthSerializer,
+    ActivateSerializer,
+    UserWithTokenSerializer,
+    UserSerializer
+)
 import logging
 
 log = logging.getLogger(__name__)
@@ -27,11 +34,19 @@ log = logging.getLogger(__name__)
 # google 시작 (가입/로그인 분기)
 class GoogleStartView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = GoogleAuthSerializer
+
+    @extend_schema(
+        request=GoogleAuthSerializer,
+        responses=UserWithTokenSerializer,
+        summary="구글 로그인/회원가입 시작"
+    )
 
     def post(self, request):
-        id_token = request.data.get('id_token')
-        if not id_token:
-            return Response({'error': 'id_token is required'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = GoogleAuthSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        id_token = serializer.validated_data['id_token']
         try:
             result = google_start_minimal(id_token)
             return Response(result, status=status.HTTP_200_OK)
@@ -41,26 +56,21 @@ class GoogleStartView(APIView):
 # 키로 활성화
 class ActivateWithKeyView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = ActivateSerializer
+
+    @extend_schema(
+        request=GoogleAuthSerializer,
+        responses=UserWithTokenSerializer,
+        summary="구글 로그인/회원가입 시작"
+    )
 
     def post(self, request):
+        serializer = ActivateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-            # id_token = request.data.get('id_token')
-            # if not id_token:
-            #     return Response({'error': 'id_token is required'}, status=status.HTTP_400_BAD_REQUEST)
-            # 개발모드 : 키없이 활성화
-            # if getattr(settings, 'OZ_ALLOW_DEV_ACTIVATION', False):
-            #     data = force_activate_and_issue_tokens(id_token)
-            #     return Response(data, status=status.HTTP_200_OK)
-
-        id_token_str = request.data.get('id_token')
-        cohort_number = request.data.get('cohort_number')
-        plain_key = request.data.get('plain_key')
-
-        if not id_token_str or cohort_number is None or not plain_key:
-            return Response(
-                {'error': 'id_token,  cohort_number, plain_key are required'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        id_token_str = serializer.validated_data['id_token']
+        cohort_number = serializer.validated_data['cohort_number']
+        plain_key = serializer.validated_data['plain_key']
 
         try:
             data, code = activate_with_key_minimal(
@@ -79,8 +89,13 @@ class ActivateWithKeyView(APIView):
             return Response({"error": "invalid key"}, status=status.HTTP_401_UNAUTHORIZED)
 
 # JWT: 리프레시, revoke
+@extend_schema(
+    request=UserWithTokenSerializer,
+    responses={'200': None}
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
+
 def revoke_view(request):
     refresh_token_str = request.data.get('refresh')
     if not refresh_token_str:
@@ -95,6 +110,14 @@ def revoke_view(request):
 # 인증 필요한 사용자 api
 class DeleteUserView(APIView):
     authentication_classes = [JWTAuthentication]
+    serializer_class = GoogleAuthSerializer
+
+    @extend_schema(
+        request=GoogleAuthSerializer,
+        responses={"200": {"type": "object"}},
+        summary="회원탈퇴"
+    )
+
     def post(self, request):
         user = request.user
         # 개발 테스트
@@ -107,10 +130,17 @@ class DeleteUserView(APIView):
         try:
             services.delete_user_social(request.user, id_token_str=id_token)
             return Response({'satus': 'success', 'message': '회원탈퇴완료'}, status=status.HTTP_200_OK)
-        except services.SOcialProviderError as e:
-            return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED_BAD_REQUEST)
+        except services.SocialProviderError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateProfileView(APIView):
+    serializer_class = UserSerializer
+    @extend_schema(
+        request=UserSerializer,
+        responses=UserSerializer,
+        summary="프로필 수정"
+    )
+
     def put(self, request):
         name = request.data.get('name')
         profile_image = request.data.get('profile_image')
@@ -119,7 +149,14 @@ class UpdateProfileView(APIView):
             return Response({'status': 'success', 'message': '회원 정보 수정 완료'}, status=status.HTTP_200_OK)
         except services.ProfileUpdateError:
             return Response({'error': 'profile update failed'}, status=status.HTTP_400_BAD_REQUEST)
+
 class ProfileView(APIView):
+    serializer_class = UserSerializer
+    @extend_schema(
+        responses=UserSerializer,
+        summary="내 프로필 조회"
+    )
+
     def get(self, request):
         claims = getattr(request, 'auth', {}) or {}
         return Response({

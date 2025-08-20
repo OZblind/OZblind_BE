@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
     'drf_spectacular',
     'drf_spectacular_sidecar',
     'backend.apps.users.apps.UsersConfig',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -134,11 +136,12 @@ REST_FRAMEWORK = {
     # 인증 설정
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 
     # 권한 설정
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ]
 }
 
@@ -146,10 +149,27 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'OZBlind Board API',
     'DESCRIPTION': 'OZBlind Board 서비스의 백엔드 API 문서입니다.',
     'VERSION': '1.0.0',
+
     'SERVE_INCLUDE_SCHEMA': False,
     'SWAGGER_UI_DIST': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
+
+    'SECURITY': [
+        {'BearerAuth': []},
+    ],
+    'COMPONENTS': {
+        'securitySchemes': {
+            'BearerAuth': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT',
+                'description': "JWT 기반 인증 (Bearer <token>)"
+            }
+        }
+    },
 }
+
+
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -160,24 +180,7 @@ import os
 SOCIAL_AUTH_GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'Your API',
-    'DESCRIPTION': 'API 문서입니다.',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'COMPONENT_SPLIT_REQUEST': True,
-    'AUTHENTICATION_WHITELIST': [],
-    'SECURITY': [{'BearerAuth': []}],
-    'COMPONENTS': {
-        'securitySchemes': {
-            'BearerAuth': {
-                'type': 'http',
-                'scheme': 'bearer',
-                'bearerFormat': 'JWT',
-            }
-        }
-    },
-}
+
 
 from datetime import timedelta
 
@@ -198,3 +201,16 @@ OZ_ENABLE_KEY_ACTIVATION = True
 
 
 OZ_SALT = "my-super-secret-salt"
+
+CORS_ALLOWED_ORIGINS = [
+    # --- Vercel 배포 환경 (Production & Staging) ---
+    "https://o-zblind-fe.vercel.app",  # Vercel 메인 배포 주소
+    "https://o-zblind-fe-git-develop-ls-projects-b89ad826.vercel.app", # Vercel develop 브랜치 미리보기 주소
+
+    # --- 로컬 개발 환경 ---
+    "http://localhost:5173",         # React 개발 서버 (Vite 등)
+    "http://127.0.0.1:5173",         # 위와 동일 (IP 주소 접속 대비)
+]
+
+# 쿠키나 인증 헤더(Authorization) 등을 주고받아야 하므로 이 설정은 필수입니다.
+CORS_ALLOW_CREDENTIALS = True
