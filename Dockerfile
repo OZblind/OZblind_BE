@@ -1,4 +1,4 @@
-ROM python:3.13-slim
+FROM python:3.13-slim
 
 # uv 설치
 RUN pip install --no-cache-dir uv
