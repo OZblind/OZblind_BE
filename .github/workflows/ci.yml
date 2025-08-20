@@ -20,7 +20,7 @@ jobs:
 
       # python 3.13 버전 설정
       - name: Set up python3.13
-        uses: actions/setip-python@v5
+        uses: actions/setup-python@v5
         with:
           python-version: '3.13'
           cache: 'uv'
