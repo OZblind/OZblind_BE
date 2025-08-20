@@ -5,7 +5,15 @@ from rest_framework_simplejwt.views import (
 )
 from . import views
 from .models import ActivationLog
-from .views import GoogleStartView, revoke_view, ActivateWithKeyView, UpdateProfileView, ProfileView, DeleteUserView
+from .views import (
+    GoogleStartView,
+    revoke_view,
+    ActivateWithKeyView,
+    UpdateProfileView,
+    ProfileView,
+    DeleteUserView,
+    UserTagView
+)
 
 urlpatterns = [
     # 구글 소셜
@@ -22,4 +30,7 @@ urlpatterns = [
     path('delete', DeleteUserView.as_view(), name='user-delete'),
     path('profile/update', UpdateProfileView.as_view(), name='user-profile'),
     path('profile', ProfileView.as_view(), name='user-profile-view'),
+
+    # 유저 태그 조회
+    path('user/tag', UserTagView.as_view(), name='user-tag'),
 ]
