@@ -116,6 +116,10 @@ class GithubPostCreateSerializer(serializers.ModelSerializer):
         PostGithub.objects.create(post=post, **github_data)
         return post
 
+
+
+
+
 # 알림기능에 포스트 정보 제한
 class NotificationPostSerializer(serializers.ModelSerializer):
     class Meta:
