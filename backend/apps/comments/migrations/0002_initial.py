@@ -10,19 +10,24 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('notifications', '0001_initial'),
+        ('comments', '0001_initial'),
         ('posts', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='notification',
+            model_name='comment',
             name='post',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='posts.post'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='posts.post'),
         ),
         migrations.AddField(
-            model_name='notification',
+            model_name='comment',
+            name='root',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='thread_comments', to='comments.comment'),
+        ),
+        migrations.AddField(
+            model_name='comment',
             name='user',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
