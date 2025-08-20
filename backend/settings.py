@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
+    'drf_spectacular_sidecar',
     'backend.apps.users.apps.UsersConfig',
     'backend.apps.boards.apps.BoardsConfig',
     'backend.apps.posts.apps.PostsConfig',
@@ -145,6 +146,8 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'OZBlind Board 서비스의 백엔드 API 문서입니다.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
 }
 
 LOGIN_REDIRECT_URL = '/'
