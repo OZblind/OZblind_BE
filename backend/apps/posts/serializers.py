@@ -22,6 +22,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
 # 게시글 목록 조회 및 검색용 게시글 리스트 시리얼라이저
 class PostListSerializer(serializers.ModelSerializer):
+    # 유저 정보에 태그 정보를 같이 보내는 시리얼라이저
+    user = UserTagSerializer(read_only=True)
     class Meta:
         model = Post
         fields = ['id', 'board', 'title', 'user', 'view_count', 'like_count', 'created_at', 'updated_at']
@@ -30,6 +32,8 @@ class PostListSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(serializers.ModelSerializer):
     root_comments = serializers.SerializerMethodField()
     bookmarks = serializers.SerializerMethodField()
+    # 유저 정보에 태그 정보를 같이 보내는 시리얼라이저
+    user=UserTagSerializer(read_only=True)
 
     class Meta:
         model = Post
@@ -128,6 +132,7 @@ class NotificationPostSerializer(serializers.ModelSerializer):
 
 # 최신 게시글 기능에 사용
 class MainPostSerializer(serializers.ModelSerializer):
+    user = UserTagSerializer(read_only=True)
     class Meta:
         model = Post
         fields = ('id', 'board', 'user', 'title', 'view_count', 'like_count', 'created_at')
