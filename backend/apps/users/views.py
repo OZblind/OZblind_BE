@@ -7,7 +7,7 @@ from rest_framework import status
 from .services import force_activate_and_issue_tokens
 from django.conf import settings
 
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from . import services
 from .services import (
@@ -170,6 +170,14 @@ class ProfileView(APIView):
 
 
 # 유저 태그 조회
+@extend_schema_view(
+    get=extend_schema(
+        summary='유저 태그 조회',
+        description='API를 요청한 유저에게 할당된 OzKey 태그 정보를 조회합니다.',
+        tags=['Tag'],
+        responses=UserTagSerializer,
+        )
+    )
 class UserTagView(APIView):
     def get(self, request):
         serializer = UserTagSerializer(request.user)
