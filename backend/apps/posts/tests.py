@@ -91,4 +91,4 @@ class PostAPITestCase(APITestCase):
         url = reverse('hot-post')
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
-        #print(res.data)
+        # print(res.data)
