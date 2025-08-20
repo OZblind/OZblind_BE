@@ -36,6 +36,13 @@ class PostViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at', 'view_count']
     ordering = ['-created_at']
 
+    # 태그기능을 위한 n+1문제 해결을 위한 최적화 코드
+    # get_queryset 오버라이드
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        optimized_queryset = queryset.select_related('user').prefetch_related('user__oz_keys')
+        return optimized_queryset
+
     def get_serializer_class(self):
         if self.action == 'list':
             # 목록 요청일 경우 게시글을 리스트로 출력
