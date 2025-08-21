@@ -17,7 +17,7 @@ class ReactionAPITestCase(APITestCase):
         self.comment = Comment.objects.create(user=self.user, post=self.post, content='Test Comment')
 
     def test_reaction_toggle_on_post(self):
-        """게시물에 대한 리액션의 생성, 취소, 변경 시나리오를 모두 테스트합니다."""
+        """게시물에 대한 리액션의 생성, 취소, 변경 시나리오를 모두 테스트"""
         
         # 1. 로그인
         self.client.force_authenticate(user=self.user)
