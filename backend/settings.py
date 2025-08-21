@@ -225,3 +225,9 @@ CORS_ALLOWED_HEADERS = ["Content-Type", "Authorization"]
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "https://api.ozboard.shop"]
 CSRF_COOKIE_DOMAIN = ".ozboard.shop"
+CSRF_COOKIE_SECURE = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+USE_X_FORWARDED_HOST = True
+SESSION_COOKIE_SECURE = True
