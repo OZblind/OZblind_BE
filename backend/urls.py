@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.views.generic import TemplateView
 from django.urls import path, include
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -17,5 +16,4 @@ urlpatterns = [
     path('api/reactions/', include('backend.apps.reactions.urls')),
     path('api/bookmarks/', include('backend.apps.bookmarks.urls')),
     path('api/ntf/', include('backend.apps.notifications.urls')),
-    path('', TemplateView.as_view(template_name='index.html'))
 ]
