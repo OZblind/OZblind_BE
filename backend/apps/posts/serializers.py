@@ -1,6 +1,6 @@
 from django.db.models import F
 from rest_framework import serializers
-from .models import Post, PostSurvey, PostGithub, BestPost
+from .models import Post, PostSurvey, PostGithub
 from backend.apps.comments.models import Comment
 from backend.apps.users.serializers import UserTagSerializer
 
