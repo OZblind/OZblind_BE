@@ -214,8 +214,14 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",         # 위와 동일 (IP 주소 접속 대비)
 
     # 도메인
-    "https://www.ozboard.shop",
+    "https://api.ozboard.shop",
 ]
 
 # 쿠키나 인증 헤더(Authorization) 등을 주고받아야 하므로 이 설정은 필수입니다.
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_METHODS = ["GET", "POST", "DELETE", "PUT", "PATCH"]
+CORS_ALLOWED_HEADERS = ["Content-Type", "Authorization"]
+
+CSRF_TRUSTED_ORIGINS = ["https://localhost:5173", "https://api.ozboard.shop"]
+CSRF_COOKIE_DOMAIN = ".ozboard.shop"
