@@ -138,3 +138,5 @@ class HotPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'board', 'title', 'view_count', 'like_count', 'comment_count')
+
+
