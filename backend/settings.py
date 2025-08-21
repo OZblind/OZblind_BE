@@ -223,5 +223,5 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_METHODS = ["GET", "POST", "DELETE", "PUT", "PATCH"]
 CORS_ALLOWED_HEADERS = ["Content-Type", "Authorization"]
 
-CSRF_TRUSTED_ORIGINS = ["https://localhost:5173", "https://api.ozboard.shop"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "https://api.ozboard.shop"]
 CSRF_COOKIE_DOMAIN = ".ozboard.shop"
