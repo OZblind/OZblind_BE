@@ -13,12 +13,12 @@ def seed_ozkey(apps, schema_editor):
         key_hash=h,
         is_active=True,
         tag_number=COHORT,
-        tag_classes=COURSE
+        tag_class=COURSE
     )
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('users', '0002_rename_tag_class_ozkey_tag_classes'),
+        ('users', '0001_initial'),
     ]
     operations = [
         migrations.RunPython(seed_ozkey, migrations.RunPython.noop),

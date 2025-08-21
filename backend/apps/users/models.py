@@ -92,8 +92,7 @@ class OzKey(models.Model):
     key_hash = models.CharField(max_length=128)
     is_active = models.BooleanField(default=True)
     tag_number = models.IntegerField(verbose_name='기수', null=True)
-    tag_classes= models.CharField(max_length=50, verbose_name='클래스', null=True)
-
+    tag_class= models.CharField(max_length=50, verbose_name='클래스', null=True)
 
     class Meta:
         indexes = [ models.Index(fields=['is_active'])]
@@ -107,5 +106,3 @@ class UserOzkeyMap(models.Model):
 
     class Meta:
         unique_together = ('user', 'oz_key')
-
-
