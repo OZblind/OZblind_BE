@@ -38,3 +38,14 @@ class PostGithub(models.Model):
     def __str__(self):
         return f"[GitHub] {self.post.title}"
 
+
+
+
+
+# 메인페이지에서 사용하는 핫게시물 모음
+class BestPost(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    view_count=models.PositiveIntegerField()
+    refreshed_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-view_count']
