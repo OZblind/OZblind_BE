@@ -120,10 +120,6 @@ class GithubPostCreateSerializer(serializers.ModelSerializer):
         PostGithub.objects.create(post=post, **github_data)
         return post
 
-
-
-
-
 # 알림기능에 포스트 정보 제한
 class NotificationPostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -132,7 +128,6 @@ class NotificationPostSerializer(serializers.ModelSerializer):
 
 # 최신 게시글 기능에 사용
 class MainPostSerializer(serializers.ModelSerializer):
-    user = UserTagSerializer(read_only=True)
     class Meta:
         model = Post
         fields = ('id', 'board', 'user', 'title', 'view_count', 'like_count', 'created_at')
@@ -143,3 +138,5 @@ class HotPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'board', 'title', 'view_count', 'like_count', 'comment_count')
+
+

@@ -12,7 +12,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'profile_image', 'role', 'is_active']
 
 class ActivateSerializer(serializers.Serializer):
-    key = serializers.CharField(write_only=True)
+    id_token_str = serializers.CharField(write_only=True)
+    cohort_number = serializers.CharField(write_only=True)
+    plain_key = serializers.CharField(write_only=True)
 
 class UserWithTokenSerializer(serializers.Serializer):
     access = serializers.CharField(read_only=True)

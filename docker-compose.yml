@@ -1,17 +1,37 @@
 services:
-
   backend:
     build: .
-    container_name: django_backend
-    command: >
-      sh -c "python manage.py migrate && gunicorn --workers 3 --bind 0.0.0.0:80>
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
+    container_name: ozblind_be-backend
     env_file:
       - .env
-    stdin_open: true
-    tty: true
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn backend.wsgi:application --workers 3 --bind 0.0.0.0:8000"
+    networks:
+      - app-network
+    ports:
+      - "8000:8000"
 
+  nginx:
+    build: ./nginx
+    container_name: ozblind_be-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
+volumes:
+  static_volume:
+  media_volume:
+
+networks:
+  app-network:
+    driver: bridge

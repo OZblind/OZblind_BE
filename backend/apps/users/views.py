@@ -7,7 +7,7 @@ from rest_framework import status
 from .services import force_activate_and_issue_tokens
 from django.conf import settings
 
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from . import services
 from .services import (
@@ -48,7 +48,7 @@ class GoogleStartView(APIView):
         serializer = GoogleAuthSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        id_token = serializer.validated_data['id_token']
+        id_token = serializer.validated_data.get('id_token')
         try:
             result = google_start_minimal(id_token)
             return Response(result, status=status.HTTP_200_OK)
@@ -61,7 +61,7 @@ class ActivateWithKeyView(APIView):
     serializer_class = ActivateSerializer
 
     @extend_schema(
-        request=GoogleAuthSerializer,
+        request=ActivateSerializer,
         responses=UserWithTokenSerializer,
         summary="구글 로그인/회원가입 시작"
     )
@@ -70,7 +70,7 @@ class ActivateWithKeyView(APIView):
         serializer = ActivateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        id_token_str = serializer.validated_data['id_token']
+        id_token_str = serializer.validated_data['id_token_str']
         cohort_number = serializer.validated_data['cohort_number']
         plain_key = serializer.validated_data['plain_key']
 
@@ -154,6 +154,8 @@ class UpdateProfileView(APIView):
 
 class ProfileView(APIView):
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     @extend_schema(
         responses=UserSerializer,
         summary="내 프로필 조회"
@@ -170,6 +172,14 @@ class ProfileView(APIView):
 
 
 # 유저 태그 조회
+@extend_schema_view(
+    get=extend_schema(
+        summary='유저 태그 조회',
+        description='API를 요청한 유저에게 할당된 OzKey 태그 정보를 조회합니다.',
+        tags=['Tag'],
+        responses=UserTagSerializer,
+        )
+    )
 class UserTagView(APIView):
     def get(self, request):
         serializer = UserTagSerializer(request.user)

@@ -8,6 +8,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework import serializers
 from backend.apps.boards.models import Board
 from .models import Post, PostSurvey, PostGithub
 from .serializers import (
@@ -16,6 +17,7 @@ from .serializers import (
     GithubPostCreateSerializer, PostGithubDetailSerializer
 )
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
 
 
 # 페이지네이션 규칙 정의
@@ -196,9 +198,17 @@ from django.db import transaction
 from django.db.models import Count
 from datetime import timedelta
 from rest_framework.views import APIView
-from rest_framework import status
 from .models import Post, BestPost
 from .serializers import HotPostSerializer, MainPostSerializer
+
+@extend_schema_view(
+    get=extend_schema(
+        summary='메인페이지 최근 게시물 조회',
+        description='API를 요청한 시점에서 모든 게시물 중 최근 5개의 게시물 목록을 조회합니다.',
+        responses=MainPostSerializer,
+        tags=['MainPage'],
+    )
+)
 class MainPostView(APIView):
     # 최신 게시물 5개
     def get(self, request):
@@ -206,8 +216,27 @@ class MainPostView(APIView):
         serializer = MainPostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+@extend_schema_view(
+    get=extend_schema(
+        summary='메인페이지 인기 게시물 조회',
+        description='API를 요청한 시점에서 베스트포스트 테이블에 등록된 게시물 목록을 조회합니다.',
+        responses=HotPostSerializer,
+        tags=['MainPage'],
+        ),
+    patch=extend_schema(
+        summary='메인페이지 인기 게시물 갱신',
+        description='API를 요청한 시점에서 7일 이내의 게시글 5개를 베스트포스트 테이블에 등록합니다.',
+        responses={
+            200: inline_serializer(
+                name='HotPatchSuccess',
+                fields={'message': serializers.CharField(default='인기 게시글 갱신 성공')},
+            )
+        },
+        tags=['MainPage'],
+    )
+)
 class HotPostView(APIView):
-    # 핫 게시물 5개 가져오기
+    # 인기 게시물 5개 가져오기
     def get(self, request):
         # 인기 게시글의 PostID조회
         hot_id=BestPost.objects.all().values_list('post_id', flat=True)
@@ -233,4 +262,4 @@ class HotPostView(APIView):
         ]
 
         BestPost.objects.bulk_create(new_best_posts)
-        return Response({'message': '핫게시글 갱신 성공'}, status=status.HTTP_200_OK)
+        return Response({'message': '인기 게시글 갱신 성공'}, status=status.HTTP_200_OK)

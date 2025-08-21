@@ -125,6 +125,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'static'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -141,7 +143,7 @@ REST_FRAMEWORK = {
 
     # 권한 설정
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
@@ -210,6 +212,9 @@ CORS_ALLOWED_ORIGINS = [
     # --- 로컬 개발 환경 ---
     "http://localhost:5173",         # React 개발 서버 (Vite 등)
     "http://127.0.0.1:5173",         # 위와 동일 (IP 주소 접속 대비)
+
+    # 도메인
+    "https://www.ozboard.shop",
 ]
 
 # 쿠키나 인증 헤더(Authorization) 등을 주고받아야 하므로 이 설정은 필수입니다.
