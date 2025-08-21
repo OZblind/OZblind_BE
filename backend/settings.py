@@ -219,15 +219,6 @@ CORS_ALLOWED_ORIGINS = [
 
 # 쿠키나 인증 헤더(Authorization) 등을 주고받아야 하므로 이 설정은 필수입니다.
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_METHODS = ["GET", "POST", "DELETE", "PUT", "PATCH"]
-CORS_ALLOWED_HEADERS = ["Content-Type", "Authorization"]
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "https://api.ozboard.shop"]
 CSRF_COOKIE_DOMAIN = ".ozboard.shop"
 CSRF_COOKIE_SECURE = True
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-USE_X_FORWARDED_HOST = True
-SESSION_COOKIE_SECURE = True
