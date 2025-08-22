@@ -42,11 +42,13 @@ jobs:
         shell: bash
         run: |
           source .venv/bin/activate
-          isort, --check --diff
+          isort . --check --diff
 
       - name: Run black
         shell: bash
-        run: black / --check --diff
+        run: |
+          source .venv/bin/activate
+          black . --check --diff
 
 
                 
