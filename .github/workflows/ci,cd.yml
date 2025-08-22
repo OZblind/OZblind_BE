@@ -64,6 +64,19 @@ jobs:
           source .venv/bin/activate
           python -m black .
 
+      # Secret 체크 (별도 step) - **위치 변경됨**
+      - name: Test secret existence
+        run: |
+          echo "Checking DEPLOY_SECRET..."
+          if [ -z "${{ secrets.DEPLOY_SECRET }}" ]; then
+            echo "DEPLOY_SECRET is NOT set!"
+            exit 1
+          else
+            echo "DEPLOY_SECRET is set correctly."
+          fi
+        env:
+          MY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+
       # EC2 배포
       - name: Deploy to EC2
         if: github.ref == 'refs/heads/develop'
@@ -88,15 +101,3 @@ jobs:
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
 
             docker-compose up -d --build
-
-      # Secret 체크 (별도 step)
-      - name: Test secret existence
-        run: |
-          if [ -z "$MY_SECRET" ]; then
-            echo "Secret is empty!"
-            exit 1
-          else
-            echo "Secret is present"
-          fi
-        env:
-          MY_SECRET: ${{ secrets.DEPLOY_SECRET }}
