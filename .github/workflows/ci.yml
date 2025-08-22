@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    defaults:
+      run:
+        shell: bash
 
     # 작업 순차적 단계
     steps:
@@ -46,21 +49,21 @@ jobs:
         shell: bash
         run: |
           source .venv/bin/activate
-          isort . 
-
-      - name: Check Black installation
+          isort .
+      - name: Check Black installation (using uv)
         shell: bash
         run: |
           source .venv/bin/activate
-          python -m black --version
+          python -m black --version  
+          uv pip show black 
+          ls -l $(which black) 
 
       - name: Run black
         shell: bash
         run: |
           source .venv/bin/activate
-          python -m black .  
-
-
+          export PATH="$PATH:$(pwd)/.venv/bin" 
+          python -m black . 
                 
 
 
