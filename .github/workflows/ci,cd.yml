@@ -70,7 +70,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script:
+          script: |
             cd /home/ec2-user/OZblind_BE
             git pull origin develop
 
