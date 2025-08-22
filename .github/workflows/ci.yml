@@ -33,6 +33,14 @@ jobs:
           echo "VIRTUAL_ENV=$(pwd)/.venv" >> $GITHUB_ENV
           echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
 
+      - name: Check virtual environment activation and PATH
+        shell: bash
+        run: |
+            source .venv/bin/activate
+            echo "VIRTUAL_ENV: $VIRTUAL_ENV"
+            echo "PATH: $PATH"
+            python --version
+
       - name: Install dependencies
         shell: bash
         run: uv sync
@@ -43,6 +51,7 @@ jobs:
         run: |
           source .venv/bin/activate
           isort . 
+
       - name: Check Black installation
         shell: bash
         run: |
