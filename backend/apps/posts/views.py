@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework import serializers
 from backend.apps.boards.models import Board
+from .filters import PostFilter
 from .models import Post, PostSurvey, PostGithub
 from .serializers import (
     PostListSerializer, PostDetailSerializer,
@@ -33,7 +34,8 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['board']
+    #filterset_fields = ['board']
+    filterset_class = PostFilter
     search_fields = ['title', 'content']
     ordering_fields = ['created_at', 'view_count']
     ordering = ['-created_at']
