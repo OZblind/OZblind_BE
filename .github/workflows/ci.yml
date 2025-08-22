@@ -50,20 +50,17 @@ jobs:
         run: |
           source .venv/bin/activate
           isort .
-      - name: Check Black installation (using uv)
+          
+      - name: Check Black installation (using uv) and reinstall if missing
         shell: bash
         run: |
           source .venv/bin/activate
-          python -m black --version  
-          uv pip show black 
-          ls -l $(which black) 
+          python -c "import black" || uv pip install black
+          python -m black --version
 
       - name: Run black
         shell: bash
         run: |
           source .venv/bin/activate
-          export PATH="$PATH:$(pwd)/.venv/bin" 
-          python -m black . 
-                
-
+          python -m black .
 
