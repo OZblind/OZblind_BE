@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import F
 
 # Create your models here.
 class Bookmark(models.Model):
@@ -16,3 +17,17 @@ class Bookmark(models.Model):
             models.UniqueConstraint(fields=['user', 'post'], name='unique_user_post_bookmark')
         ]
         ordering = ['-created_at']
+
+    # 메서드만 추가했기에 마이그레이션 필요 없음
+    def save(self, *args, **kwargs):
+        # 북마크가 새로 생성될 때만 카운트를 증가시킴
+        if self._state.adding:
+            self.post.bookmark_count = F('bookmark_count') + 1
+            self.post.save(update_fields=['bookmark_count'])
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # 북마크가 삭제될 때만 카운트를 감소시킴
+        self.post.bookmark_count = F('bookmark_count') - 1
+        self.post.save(update_fields=['bookmark_count'])
+        super().delete(*args, **kwargs)
