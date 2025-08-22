@@ -43,12 +43,17 @@ jobs:
         run: |
           source .venv/bin/activate
           isort . 
+      - name: Check Black installation
+        shell: bash
+        run: |
+          source .venv/bin/activate
+          black --version
 
       - name: Run black
         shell: bash
         run: |
           source .venv/bin/activate
-          black .  
+          python -m black .  
 
 
                 
