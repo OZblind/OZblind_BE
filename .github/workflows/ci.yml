@@ -32,13 +32,17 @@ jobs:
           source .venv/bin/activate
           echo "VIRTUAL_ENV=$(pwd)/.venv" >> $GITHUB_ENV
           echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
+
       - name: Install dependencies
         shell: bash
         run: uv sync
+
       # isort black 코드 포맷 검사
       - name: Run isort
         shell: bash
-        run: isort, --check --diff
+        run: |
+          source .venv/bin/activate
+          isort, --check --diff
 
       - name: Run black
         shell: bash

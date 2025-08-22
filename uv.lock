@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 
 [[package]]
@@ -374,6 +374,7 @@ dependencies = [
     { name = "drf-spectacular-sidecar" },
     { name = "google-auth" },
     { name = "gunicorn" },
+    { name = "isort" },
     { name = "psycopg2-binary" },
     { name = "python-dotenv" },
     { name = "requests" },
@@ -401,6 +402,7 @@ requires-dist = [
     { name = "drf-spectacular-sidecar", specifier = ">=2025.8.1" },
     { name = "google-auth", specifier = ">=2.40.3" },
     { name = "gunicorn", specifier = ">=23.0.0" },
+    { name = "isort", specifier = ">=6.0.1" },
     { name = "isort", marker = "extra == 'dev'", specifier = ">=5.12.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
