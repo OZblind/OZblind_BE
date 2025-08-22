@@ -86,3 +86,14 @@ jobs:
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           
             docker-compose up -d --build
+            
+            - name: Test secret existence
+              run: |
+                if [ -z "$MY_SECRET" ]; then
+                  echo "Secret is empty!"
+                  exit 1
+                else
+                  echo "Secret is present"
+                fi
+              env:
+                MY_SECRET: ${{ secrets.DEPLOY_SECRET }}
