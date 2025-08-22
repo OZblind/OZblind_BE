@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'backend.apps.notifications.apps.NotificationsConfig',
 ]
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -215,6 +215,7 @@ CORS_ALLOWED_ORIGINS = [
 
     # 도메인
     "https://api.ozboard.shop",
+    'https://www.ozboard.shop',
 ]
 
 # 쿠키나 인증 헤더(Authorization) 등을 주고받아야 하므로 이 설정은 필수입니다.
@@ -222,3 +223,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_COOKIE_DOMAIN = ".ozboard.shop"
 CSRF_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://ozboard.shop",
+    "https://api.ozboard.shop",
+]
+
