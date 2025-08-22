@@ -1,99 +1,35 @@
-name: python CI
-# 워크 플로우가 실행될 이벤트
-on:
-  push:
-    branches: [ "main", "develop"]
-  pull_request:
-    branches: [ "main", "develop"]
+- name: Deploy to EC2
+  if: github.ref == 'refs/heads/develop'
+  uses: appleboy/ssh-action@v0.1.10
+  with:
+    host: ${{ secrets.EC2_HOST }}
+    username: ${{ secrets.EC2_USERNAME }}
+    key: ${{ secrets.EC2_SSH_KEY }}
+    script: |
+      cd /home/ec2-user/OZblind_BE
+      git pull origin develop
 
-# 실행될 작업
-jobs:
-  build-and-test:
-    # 실행 환경
-    runs-on: ubuntu-latest
-    env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-    defaults:
-      run:
-        shell: bash
+      echo "DB_NAME=${{ secrets.DB_NAME }}" > .env
+      echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+      echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+      echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+      echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+      echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
+      echo "DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }}" >> .env
+      echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
+      echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+      echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
 
-    # 작업 순차적 단계
-    steps:
-      # 저장소의 코드 워크플로우 환경으로 가져옴
-      -  uses: actions/checkout@v4
+      docker-compose up -d --build
 
-      # python 3.13 버전 설정
-      - name: Set up python3.13
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
-      - name: Create and activate virtual environment
-        run: |
-          uv venv
-          source .venv/bin/activate
-          echo "VIRTUAL_ENV=$(pwd)/.venv" >> $GITHUB_ENV
-          echo "::add-path::$(pwd)/.venv/bin"  
-
-      
-
-      - name: Install dependencies
-        shell: bash
-        run: uv sync
-
-      # isort black 코드 포맷 검사
-      - name: Run isort
-        shell: bash
-        run: |
-          source .venv/bin/activate
-          isort .
-          
-      - name: Check Black installation (using uv) and reinstall if missing
-        shell: bash
-        run: |
-          source .venv/bin/activate
-          python -c "import black" || uv pip install black
-          python -m black --version
-
-      - name: Run black
-        shell: bash
-        run: |
-          source .venv/bin/activate
-          python -m black .
-      - name: Deploy to EC2
-        if: github.ref == 'refs/heads/develop'
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ec2-user/OZblind_BE
-            git pull origin develop
-
-            echo "DB_NAME=${{ secrets.DB_NAME }}" > .env
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
-            echo "DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }}" >> .env
-            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
-            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
-            echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
-          
-            docker-compose up -d --build
-            
-            - name: Test secret existence
-              run: |
-                if [ -z "$MY_SECRET" ]; then
-                  echo "Secret is empty!"
-                  exit 1
-                else
-                  echo "Secret is present"
-                fi
-              env:
-                MY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+# Test secret existence는 별도 step으로
+- name: Test secret existence
+  run: |
+    if [ -z "$MY_SECRET" ]; then
+      echo "Secret is empty!"
+      exit 1
+    else
+      echo "Secret is present"
+    fi
+  env:
+    MY_SECRET: ${{ secrets.DEPLOY_SECRET }}
