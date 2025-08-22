@@ -3,8 +3,8 @@ name: python CI
 on:
   push:
     branches: [ "main", "develop"]
-    pull_request:
-      branches: [ "main", "develop"]
+  pull_request:
+    branches: [ "main", "develop"]
 
 # 실행될 작업
 jobs:
@@ -15,44 +15,36 @@ jobs:
     # 작업 순차적 단계
     steps:
       # 저장소의 코드 워크플로우 환경으로 가져옴
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      -  uses: actions/checkout@v4
 
       # python 3.13 버전 설정
       - name: Set up python3.13
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Cache uv dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/uv
-          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-uv-
 
-      - name: install uv
+      - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
 
-      # uv설치하고 pyproject.toml 기반으로 의존성 설치
-      - name: Install dependencies with uv
+      - name: Create and activate virtual environment
         run: |
-          # 설치된 uv 사용하기 위해 PATH 설정
-          source ~/.cargo/env
-          uv pip install ".[dev]"
-
+          uv venv
+          source .venv/bin/activate
+          echo "VIRTUAL_ENV=$(pwd)/.venv" >> $GITHUB_ENV
+          echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        shell: bash
+        run: uv sync
       # isort black 코드 포맷 검사
-      - name: Check formatting with isort and black
-        run: |
-          source ~/.cargo/env
-          isort . --check-only
-          black . --check
+      - name: Run isort
+        shell: bash
+        run: isort, --check --diff
 
-      # pytest 테스트
-      - name: Test with pytest
-        run: |
-          source ~/.cargo/env
-          pytest
-          
+      - name: Run black
+        shell: bash
+        run: black / --check --diff
+
+
+                
 
 
