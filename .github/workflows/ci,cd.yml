@@ -1,15 +1,13 @@
 name: python CI
-# 워크 플로우가 실행될 이벤트
+# 워크플로우가 실행될 이벤트
 on:
   push:
     branches: [ "main", "develop"]
   pull_request:
     branches: [ "main", "develop"]
 
-# 실행될 작업
 jobs:
   build-and-test:
-    # 실행 환경
     runs-on: ubuntu-latest
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -17,40 +15,41 @@ jobs:
       run:
         shell: bash
 
-    # 작업 순차적 단계
     steps:
-      # 저장소의 코드 워크플로우 환경으로 가져옴
-      -  uses: actions/checkout@v4
+      # 저장소 코드 체크아웃
+      - uses: actions/checkout@v4
 
-      # python 3.13 버전 설정
+      # Python 3.13 설정
       - name: Set up python3.13
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
+      # uv 설치
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
 
+      # 가상환경 생성 및 활성화
       - name: Create and activate virtual environment
         run: |
           uv venv
           source .venv/bin/activate
           echo "VIRTUAL_ENV=$(pwd)/.venv" >> $GITHUB_ENV
-          echo "::add-path::$(pwd)/.venv/bin"  
+          echo "::add-path::$(pwd)/.venv/bin"
 
-      
-
+      # 의존성 설치
       - name: Install dependencies
         shell: bash
         run: uv sync
 
-      # isort black 코드 포맷 검사
+      # 코드 포맷 검사 (isort)
       - name: Run isort
         shell: bash
         run: |
           source .venv/bin/activate
           isort .
 
+      # Black 설치 확인 및 설치
       - name: Check Black installation (using uv) and reinstall if missing
         shell: bash
         run: |
@@ -58,11 +57,14 @@ jobs:
           python -c "import black" || uv pip install black
           python -m black --version
 
+      # Black 실행
       - name: Run black
         shell: bash
         run: |
           source .venv/bin/activate
           python -m black .
+
+      # EC2 배포
       - name: Deploy to EC2
         if: github.ref == 'refs/heads/develop'
         uses: appleboy/ssh-action@v0.1.10
@@ -87,7 +89,7 @@ jobs:
 
             docker-compose up -d --build
 
-      # Test secret existence는 별도 step으로
+      # Secret 체크 (별도 step)
       - name: Test secret existence
         run: |
           if [ -z "$MY_SECRET" ]; then
