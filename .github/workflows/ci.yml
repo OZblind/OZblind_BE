@@ -11,6 +11,8 @@ jobs:
   build-and-test:
     # 실행 환경
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
     # 작업 순차적 단계
     steps:
