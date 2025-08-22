@@ -64,19 +64,6 @@ jobs:
           source .venv/bin/activate
           python -m black .
 
-      # Secret 체크 (별도 step) - **위치 변경됨**
-      - name: Test secret existence
-        run: |
-          echo "Checking DEPLOY_SECRET..."
-          if [ -z "${{ secrets.DEPLOY_SECRET }}" ]; then
-            echo "DEPLOY_SECRET is NOT set!"
-            exit 1
-          else
-            echo "DEPLOY_SECRET is set correctly."
-          fi
-        env:
-          MY_SECRET: ${{ secrets.DEPLOY_SECRET }}
-
       # EC2 배포
       - name: Deploy to EC2
         if: github.ref == 'refs/heads/develop'
