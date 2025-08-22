@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.db import transaction # DB 작업을 안전하게 묶어주기 위한 도구
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from .models import Reaction
 from .serializers import ReactionSerializer
@@ -18,14 +19,30 @@ class ReactionAPIView(APIView):
     """
     permission_classes = [IsAuthenticated] # 로그인한 사용자만 접근 가능
 
+    @extend_schema(
+        tags=["Reactions"],
+        summary="리액션 생성/변경/취소 (토글)",
+        description="사용자가 게시물 또는 댓글에 리액션을 추가하거나 변경, 취소할 수 있는 API",
+        request=ReactionSerializer,
+        responses={
+            201: OpenApiResponse(description="리액션이 성공적으로 생성됨"),
+            200: OpenApiResponse(description="리액션이 성공적으로 변경되거나 취소됨"),
+            400: OpenApiResponse(description="잘못된 요청 데이터"),
+            401: OpenApiResponse(description="인증 되지 않은 사용자 접근"),
+        }
+    )
+
+    
     @transaction.atomic # 이 메서드 안의 모든 DB 작업이 하나의 단위로 처리되도록 보장함
     def post(self, request, *args, **kwargs):
         
         #  Serializer를 통해 입력 데이터의 유효성을 검증
         serializer = ReactionSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"status": "error", "message": "잘못된 요청 데이터", "errors": serializer.errors}, 
+                status=status.HTTP_400_BAD_REQUEST)
+
         # 유효성 검증을 통과한 데이터들을 가져옴
         validated_data = serializer.validated_data
         content_type = validated_data['content_type']
@@ -59,7 +76,10 @@ class ReactionAPIView(APIView):
                     target_object.save()
                 
                 existing_reaction.delete()
-                return Response({"message": "리액션이 취소됨."}, status=status.HTTP_200_OK)
+                return Response(
+                    {"status": "success", "message": "리액션이 취소됨."}, 
+                    status=status.HTTP_200_OK)
+            
             else:
                 # 다른 리액션 -> 변경 (Update)
                 
@@ -76,7 +96,9 @@ class ReactionAPIView(APIView):
                 existing_reaction.reaction = reaction_choice
                 existing_reaction.save()
                 serializer = ReactionSerializer(existing_reaction)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(
+                    {"status": "success", "message": "리액션이 변경됨.",
+                    "data": serializer.data}, status=status.HTTP_200_OK)
         else:
             # 리액션이 새로 생성되면 Create
             
@@ -89,4 +111,6 @@ class ReactionAPIView(APIView):
                 target_object.save()
             
             serializer = ReactionSerializer(existing_reaction)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                {"status": "success", "message": "리액션이 생성됨.",
+                 "data": serializer.data}, status=status.HTTP_201_CREATED)
