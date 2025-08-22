@@ -98,4 +98,3 @@ jobs:
           fi
         env:
           MY_SECRET: ${{ secrets.DEPLOY_SECRET }}
-      g
