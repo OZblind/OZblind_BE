@@ -39,8 +39,14 @@ class BookmarkAPIView(APIView):
         serializer.save(user=request.user)
         
         response_data = {
-            'id': serializer.instance.id,
-            'post_id': serializer.instance.post.id
+            "status": "success",
+            "message": "북마크가 생성되었습니다.",
+            "data": {
+                'post': {
+                    'id': serializer.instance.id,
+                    'post_id': serializer.instance.post.id
+                }
+            }
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
     
@@ -60,8 +66,9 @@ class BookmarkAPIView(APIView):
         
         bookmark = get_object_or_404(Bookmark, user=request.user, post=post)
         bookmark.delete()
-        return Response({"message": "삭제완료"}, status=status.HTTP_200_OK)
-    
+        return Response(
+            {"status": "success", "message": "삭제완료"}, status=status.HTTP_200_OK)
+
 # 북마크 목록 조회 (api/bookmarks/me/)
 @extend_schema(
     tags=["Bookmarks"],
@@ -87,7 +94,7 @@ class BookmarkListView(generics.ListAPIView):
         queryset = self.get_queryset()
         # 북마크가 없을 경우
         if not queryset.exists():
-            return Response({"message": "bookmarks not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"status": "error", "message": "bookmarks not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.get_serializer(queryset, many=True)
 
