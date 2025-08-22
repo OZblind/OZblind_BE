@@ -74,6 +74,7 @@ class BookmarkAPIView(APIView):
         401: OpenApiResponse(description="인증 되지 않은 사용자 접근"),
     }
 )
+# generics.ListAPIView가 get의 기본 구현을 제공하므로, 별도의 get 메서드를 구현할 필요 없음 개꿀 ㅋㅋㅋㅋㅋ
 class BookmarkListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BookmarkListSerializer

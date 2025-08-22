@@ -18,6 +18,7 @@ class Bookmark(models.Model):
         ]
         ordering = ['-created_at']
 
+    # 메서드만 추가했기에 마이그레이션 필요 없음
     def save(self, *args, **kwargs):
         # 북마크가 새로 생성될 때만 카운트를 증가시킴
         if self._state.adding:
