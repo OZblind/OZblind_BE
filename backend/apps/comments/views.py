@@ -14,7 +14,8 @@ from .serializers import CommentCreateSerializer, CommentSerializer, MyCommentSe
 @extend_schema_view(
     post=extend_schema(
         summary='댓글 작성',
-        description='API를 요청한 유저의 댓글을 작성합니다.',
+        description='API를 요청한 유저의 댓글을 작성합니다.\n\n'+
+                    '**대댓글이 아닌경우 root키는 사용하면 안됨**',
         request=CommentCreateSerializer,
         responses=CommentCreateSerializer,
         tags=['Comment'],
