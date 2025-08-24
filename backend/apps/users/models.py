@@ -92,12 +92,12 @@ class OzKey(models.Model):
     key_hash = models.CharField(max_length=128)
     is_active = models.BooleanField(default=True)
     tag_number = models.IntegerField(verbose_name='기수', null=True)
-    tag_class= models.CharField(max_length=50, verbose_name='클래스', null=True)
+    tag_class= models.CharField(max_length=50, verbose_name='클래스', null=True, choices=KEY_TYPES)
 
     class Meta:
         indexes = [ models.Index(fields=['is_active'])]
     def __str__(self):
-        return f"{self.tag_number}기 {self.tag_classes}"
+        return f"{self.tag_number}기 {self.tag_class}"
 
 class UserOzkeyMap(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)

@@ -28,6 +28,10 @@ class OzKeyAdminForm(forms.ModelForm):
             obj.save()
         return obj
 
+class UserOzkeyMapInline(admin.TabularInline):
+    model = UserOzkeyMap
+    extra = 1
+
 # User Admin
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -35,28 +39,15 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('role', 'social_provider', 'created_at') # is_active 제거
     search_fields = ('email', 'social_id')
     date_hierarchy = 'created_at'
-    # inlines = [ActivationLogInline] # ActivationLogInline 제거
-    # actions = ['activate_users', 'deactivate_users'] # 액션 제거
-
-    # @admin.action(description="선택 사용자 활성화(관리자 수동") # 액션 정의 제거
-    # def activate_users(self, request, queryset):
-    #     updated = queryset.filter(is_active=False).update(is_active=True)
-    #     self.message_user(request, f"{updated}명 활성화 완료", level=messages.SUCCESS)
-
-    # @admin.action(description="선택 사용자 비활성화") # 액션 정의 제거
-    # def deactivate_users(self, request, queryset):
-    #     cnt = queryset.update(is_active=False)
-    #     self.message_user(request, f"{cnt}명 비활성화 완료", level=messages.WARNING)
 
 
 # OzKey admin
 @admin.register(OzKey)
 class OzKeyAdmin(admin.ModelAdmin):
     form = OzKeyAdminForm
-    list_display = ('id', 'tag_number', 'tag_class', 'key_hash') # is_active 제거
-    # list_filter = ('is_active',) # is_active 필터 제거
+    list_display = ('id', 'tag_number', 'tag_class') # key_hash 제거
     readonly_fields = ('key_hash',)
-    filter_horizontal = ('users',) # ManyToMany 필드 표시
+    inlines = [UserOzkeyMapInline] # UserOzkeyMap 인라인 추가
 
 # ActivationLog admin
 @admin.register(ActivationLog)
