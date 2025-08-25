@@ -103,6 +103,3 @@ class UserOzkeyMap(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     oz_key = models.ForeignKey(OzKey, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('user', 'oz_key')
