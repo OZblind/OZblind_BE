@@ -216,6 +216,8 @@ CORS_ALLOWED_ORIGINS = [
     # 도메인
     'https://ozboard.shop',
     "https://www.ozboard.shop",
+    "https://api.ozboard.shop",
+
 ]
 
 # 쿠키나 인증 헤더(Authorization) 등을 주고받아야 하므로 이 설정은 필수입니다.
