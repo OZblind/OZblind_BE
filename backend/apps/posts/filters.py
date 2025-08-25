@@ -11,10 +11,15 @@ class PostFilter(django_filters.FilterSet):
         model = Post
         fields = ['board']
 
-    # 2.'user_tag_number'파라미터를 처리할 메소드 직접 정의
-    def filter_by_tag_number(self, queryset, name, value):
-        return queryset.filter(user__oz_keys__tag_number=value)
+    @property
+    def qs(self):
+        parent_qs = super().qs
+        return parent_qs.select_related('user', 'board').prefetch_related('user__oz_keys')
 
-    # 3. 'user_tag_class'파라미터를 처리할 메소드 직접 정의
-    def filter_by_tag_class(self, queryset, name, value):
-        return queryset.filter(user__oz_keys__tag_class=value)
+    # # 2.'user_tag_number'파라미터를 처리할 메소드 직접 정의
+    # def filter_by_tag_number(self, queryset, name, value):
+    #     return queryset.filter(user__oz_keys__tag_number=value)
+    #
+    # # 3. 'user_tag_class'파라미터를 처리할 메소드 직접 정의
+    # def filter_by_tag_class(self, queryset, name, value):
+    #     return queryset.filter(user__oz_keys__tag_class=value)

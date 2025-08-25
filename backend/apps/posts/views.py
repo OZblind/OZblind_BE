@@ -29,12 +29,12 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().distinct()
+    serializer_class = PostListSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    #filterset_fields = ['board']
     filterset_class = PostFilter
     search_fields = ['title', 'content']
     ordering_fields = ['created_at', 'view_count']
