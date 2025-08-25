@@ -214,7 +214,7 @@ from .serializers import HotPostSerializer, MainPostSerializer
 class MainPostView(APIView):
     # 최신 게시물 5개
     def get(self, request):
-        posts = Post.objects.all()[:5]
+        posts = Post.objects.all()[:15]
         serializer = MainPostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
