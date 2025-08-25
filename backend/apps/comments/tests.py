@@ -15,6 +15,13 @@ class CommentAPITestCase(APITestCase):
         )
         self.client.force_authenticate(user=self.user)
 
+        self.user2 = User.objects.create_user(
+            email='normal.user2@example.com',
+            social_provider='google',
+            social_id='google123456780',
+            role='user'
+        )
+
         self.board=Board.objects.create(
             name="Test Board",
             description="Test Board",
@@ -49,6 +56,7 @@ class CommentAPITestCase(APITestCase):
         res = self.client.post(url,data)
         self.assertEqual(res.status_code, 201)
 
+        self.client.force_authenticate(user=self.user2)
         data={
             'post': self.post.id,
             'parent': self.comment2.id,
@@ -56,7 +64,14 @@ class CommentAPITestCase(APITestCase):
         }
         res = self.client.post(url,data)
         self.assertEqual(res.status_code, 201)
-        #print(res.data)
+
+        # 작성 알림 전송 테스트
+        # 작성자인 user의 댓글은 알림이 오지 않고, 대댓글은 알림이 올 것
+        self.client.force_authenticate(user=self.user)
+        url=reverse('ntf')
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 200)
+        # print(res.data)
 
     def test_cmt_update_patch(self):
         url = reverse('cmt-update', kwargs={'pk':self.comment1.id})
@@ -82,4 +97,4 @@ class CommentAPITestCase(APITestCase):
         url = reverse('cmt-me')
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
-        print(res.data)
+        #print(res.data)

@@ -128,6 +128,7 @@ class NotificationPostSerializer(serializers.ModelSerializer):
 
 # 최신 게시글 기능에 사용
 class MainPostSerializer(serializers.ModelSerializer):
+    user = UserTagSerializer(read_only=True)
     class Meta:
         model = Post
         fields = ('id', 'board', 'user', 'title', 'view_count', 'like_count', 'created_at')
@@ -138,5 +139,3 @@ class HotPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'board', 'title', 'view_count', 'like_count', 'comment_count')
-
-
