@@ -36,15 +36,15 @@ class Reaction(models.Model):
             elif self.reaction == self.ReactionType.DISLIKE:
                 target_object.dislike_count = F('dislike_count') + 1
 
-            target_object.save(update_fields=[f'({self.reaction}_count)'])
+            target_object.save(update_fields=[f'{self.reaction}_count'])
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         target_object = self.content_object
-        if self.reaction == self.ReactionType.LIKE:
+        if self.reaction == self.ReactionType.LIKE and target_object.like_count > 0:
             target_object.like_count = F('like_count') - 1
-        elif self.reaction == self.ReactionType.DISLIKE:
+        elif self.reaction == self.ReactionType.DISLIKE and target_object.dislike_count > 0:
             target_object.dislike_count = F('dislike_count') - 1
 
-        target_object.save(update_fields=[f'({self.reaction}_count)'])
+        target_object.save(update_fields=[f'{self.reaction}_count'])
         super().delete(*args, **kwargs)
