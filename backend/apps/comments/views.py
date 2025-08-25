@@ -29,10 +29,10 @@ class CommentCreate(APIView):
 
         # 루트댓글은 게시물 작성자에게, 대댓글은 루트댓글 작성자에게 알림 송신
         recipient=None
-        if new_comment.root:
-            recipient=new_comment.root.user
-        else:
+        if new_comment.root==new_comment:
             recipient=new_comment.post.user
+        else:
+            recipient=new_comment.root.user
 
         # 본인에게 본인이 송신하지 않음
         if recipient != request.user:
