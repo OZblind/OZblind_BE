@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import F
 
 class Reaction(models.Model):
     
@@ -26,3 +27,24 @@ class Reaction(models.Model):
             )
         ]
         ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            target_object = self.content_object
+            if self.reaction == self.ReactionType.LIKE:
+                target_object.like_count = F('like_count') + 1
+            elif self.reaction == self.ReactionType.DISLIKE:
+                target_object.dislike_count = F('dislike_count') + 1
+
+            target_object.save(update_fields=[f'{self.reaction}_count'])
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        target_object = self.content_object
+        if self.reaction == self.ReactionType.LIKE and target_object.like_count > 0:
+            target_object.like_count = F('like_count') - 1
+        elif self.reaction == self.ReactionType.DISLIKE and target_object.dislike_count > 0:
+            target_object.dislike_count = F('dislike_count') - 1
+
+        target_object.save(update_fields=[f'{self.reaction}_count'])
+        super().delete(*args, **kwargs)

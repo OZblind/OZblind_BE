@@ -14,7 +14,8 @@ from .serializers import CommentCreateSerializer, CommentSerializer, MyCommentSe
 @extend_schema_view(
     post=extend_schema(
         summary='댓글 작성',
-        description='API를 요청한 유저의 댓글을 작성합니다.',
+        description='API를 요청한 유저의 댓글을 작성합니다.\n\n'+
+                    '**대댓글이 아닌경우 root키는 사용하면 안됨**',
         request=CommentCreateSerializer,
         responses=CommentCreateSerializer,
         tags=['Comment'],
@@ -28,10 +29,10 @@ class CommentCreate(APIView):
 
         # 루트댓글은 게시물 작성자에게, 대댓글은 루트댓글 작성자에게 알림 송신
         recipient=None
-        if new_comment.root:
-            recipient=new_comment.root.user
-        else:
+        if new_comment.root==new_comment:
             recipient=new_comment.post.user
+        else:
+            recipient=new_comment.root.user
 
         # 본인에게 본인이 송신하지 않음
         if recipient != request.user:
