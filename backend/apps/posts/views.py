@@ -242,7 +242,6 @@ class HotPostView(APIView):
     def get(self, request):
         # 인기 게시글의 PostID조회
         hot_id=BestPost.objects.all().values_list('post_id', flat=True)
-
         posts=Post.objects.filter(id__in=hot_id).annotate(
             comment_count=Count('comments')
         ).order_by('-view_count')

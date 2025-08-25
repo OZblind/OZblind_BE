@@ -74,7 +74,7 @@ class PostAPITestCase(APITestCase):
         url = reverse('main-post')
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
-        #print(res.data[0])
+        print(res.data[0])
 
     # 인기 5개 갱신
     def test_post_hot_patch(self):
