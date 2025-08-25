@@ -5,7 +5,6 @@ from typing import Tuple, Dict, Optional
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
-
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.exceptions import TokenError
@@ -199,7 +198,7 @@ def activate_with_key_minimal(
     sub = info.get('sub')
     user = User.objects.filter(social_provider='google', social_id=sub).first()
     if not user:
-        raise UserNotFoundError('user not found')
+        return {'status': 'user_not_found'}, 404
 
     #이미 활성화된 사용자면 바로 토큰
     if user.is_active:
@@ -209,7 +208,7 @@ def activate_with_key_minimal(
     active_qs = OzKey.objects.filter(is_active=True, tag_number=cohort_number)
     if not active_qs.exists():
         ActivationLog.objects.create(user=user, oz_key=None, ok=False)
-        raise NoActiveKeyConfiguredError('no active key configured')
+        return {'status': 'no_active_key'}, 400
 
     # 평문 키 해시 계산 후 매칭
     key_hash = hash_key(plain_key)
@@ -217,16 +216,16 @@ def activate_with_key_minimal(
     if not ozkey:
         # 기수 맞는데 키 틀림
         ActivationLog.objects.create(user=user, oz_key=None, ok=False)
-        raise InvalidKeyError('invalid key')
+        return {'status': 'invalid_key'}, 400
 
     # 유저-키 매핑 및 활성화
-    UserOzkeyMap.objects.get_or_create(user=user, oz_key=ozkey)
-    if not user.is_active:
-        user.is_active = True
-        user.save(update_fields=["is_active"])
-
-    ActivationLog.objects.create(user=user, oz_key=ozkey, ok=True)
-    return {'status': 'activated', **_issue_tokens(user), 'next': '/main'}, 200
+    with transaction.atomic():
+        UserOzkeyMap.objects.get_or_create(user=user, oz_key=ozkey)
+        if not user.is_active:
+            user.is_active = True
+            user.save(update_fields=["is_active"])
+        ActivationLog.objects.create(user=user, oz_key=ozkey, ok=True)
+        return {'status': 'activated', **_issue_tokens(user), 'next': '/main'}, 200
 
 
 def force_activate_and_issue_tokens(id_token_str: str) -> Dict[str, object]:
