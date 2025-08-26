@@ -23,8 +23,8 @@ urlpatterns = [
     path('auth/activate', ActivateWithKeyView.as_view(), name='auth-activate'),
 
     # 토큰
-    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
-    path('auth/revoke/', revoke_view, name='revoke-token'),
+    path('auth/token/refresh', TokenRefreshView.as_view(), name='token-refresh'),
+    path('auth/revoke', revoke_view, name='revoke-token'),
 
     # 유저
     path('delete', DeleteUserView.as_view(), name='user-delete'),
