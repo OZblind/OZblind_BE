@@ -189,6 +189,7 @@ def _get_active_ozkey(cohort_number: int) -> Optional[OzKey]:
     )
 @api_view(['POST'])
 def activate_with_key_minimal(
+        request,
     id_token_str: str,
     cohort_number: int,
     plain_key: str,

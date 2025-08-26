@@ -75,13 +75,13 @@ class ActivateWithKeyView(APIView):
         plain_key = serializer.validated_data['plain_key']
 
         try:
-            data, code = activate_with_key_minimal(
+            response = activate_with_key_minimal(
                 request=request._request,
                 id_token_str=id_token_str,
                 cohort_number=int(cohort_number),
                 plain_key=plain_key,
             )
-            return Response(data, status=code)
+            return Response
         except InvalidGoogleTokenError:
             return Response({"error": "invalid google token"}, status=status.HTTP_401_UNAUTHORIZED)
         except UserNotFoundError:
