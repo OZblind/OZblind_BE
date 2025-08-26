@@ -8,6 +8,7 @@ from django.db import transaction
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.decorators import api_view
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 
@@ -186,7 +187,7 @@ def _get_active_ozkey(cohort_number: int) -> Optional[OzKey]:
         .order_by('-id')
         .first()
     )
-
+@api_view(['POST'])
 def activate_with_key_minimal(
     id_token_str: str,
     cohort_number: int,

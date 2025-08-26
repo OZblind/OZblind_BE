@@ -46,7 +46,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -172,7 +171,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-
+ADMIN_LOGIN_REDIRECT_URL = '/admin/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -223,12 +222,13 @@ CORS_ALLOWED_ORIGINS = [
 # 쿠키나 인증 헤더(Authorization) 등을 주고받아야 하므로 이 설정은 필수입니다.
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_COOKIE_DOMAIN = ".ozboard.shop"
-CSRF_COOKIE_SECURE = True
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://ozboard.shop",
-    "https://www.ozboard.shop",
-    "https://api.ozboard.shop",
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',     # 어드민/일반 username-password 로그인
 ]
 
+
+SESSION_COOKIE_SECURE = False  # 개발 환경에서는 False, 프로덕션 환경에서는 True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
