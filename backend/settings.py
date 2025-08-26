@@ -45,6 +45,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware'
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -232,3 +233,11 @@ AUTHENTICATION_BACKENDS = [
 SESSION_COOKIE_SECURE = False  # 개발 환경에서는 False, 프로덕션 환경에서는 True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+
+CSRF_COOKIE_DOMAIN = ".ozboard.shop"  # 공통 도메인 사용
+CSRF_COOKIE_SECURE = True  # HTTPS 환경에서만 쿠키 전송
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.ozboard.shop",  # 프론트엔드
+    "https://api.ozboard.shop",  # API 엔드포인트
+    "https://admin.ozboard.shop",  # 백엔드 (어드민 페이지)
+]
