@@ -241,3 +241,5 @@ CSRF_TRUSTED_ORIGINS = [
     "https://api.ozboard.shop",  # API 엔드포인트
     "https://admin.ozboard.shop",  # 백엔드 (어드민 페이지)
 ]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
