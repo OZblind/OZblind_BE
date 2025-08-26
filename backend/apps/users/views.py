@@ -76,6 +76,7 @@ class ActivateWithKeyView(APIView):
 
         try:
             data, code = activate_with_key_minimal(
+                reqeust=request,
                 id_token_str=id_token_str,
                 cohort_number=int(cohort_number),
                 plain_key=plain_key,
