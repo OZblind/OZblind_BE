@@ -81,7 +81,7 @@ class ActivateWithKeyView(APIView):
                 cohort_number=int(cohort_number),
                 plain_key=plain_key,
             )
-            return Response
+            return response
         except InvalidGoogleTokenError:
             return Response({"error": "invalid google token"}, status=status.HTTP_401_UNAUTHORIZED)
         except UserNotFoundError:
