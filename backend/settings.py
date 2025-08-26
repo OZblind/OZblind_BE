@@ -230,7 +230,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-SESSION_COOKIE_SECURE = False  # 개발 환경에서는 False, 프로덕션 환경에서는 True
+SESSION_COOKIE_SECURE = True  # 개발 환경에서는 False, 프로덕션 환경에서는 True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
